@@ -1,0 +1,39 @@
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap');
+
+:root { --ink:#202124; --muted:#9a9a9a; --line:#dedede; --blue:#69aef0; --blue-deep:#287de0; --pink:#ef9aaa; --yellow:#ffe56c; --paper:#fff; }
+:root[data-theme="dark"] { --ink:#f0f0f0; --muted:#aaa; --line:#454545; --paper:#202124; }
+* { box-sizing:border-box; }
+html { background:var(--paper); color:var(--ink); font-family:Manrope, Arial, sans-serif; }
+body { margin:0; }
+[v-cloak] { display:none; }
+.dashboard { max-width:1920px; margin:auto; padding:34px 3.4vw 44px; }
+.masthead { display:flex; align-items:flex-start; justify-content:space-between; gap:20px; margin-bottom:42px; }
+h1,h2,p { margin:0; }
+h1 { font-size:clamp(34px, 4vw, 68px); letter-spacing:-.055em; line-height:1; font-weight:800; }
+h1 span { color:#aaa; font-weight:500; }
+h2 { font-size:23px; letter-spacing:-.04em; line-height:1.1; }
+.eyebrow { color:#999; font-size:11px; font-weight:800; letter-spacing:.1em; text-transform:uppercase; margin-bottom:10px; }
+.route-mark { display:flex; align-items:center; gap:8px; margin:9px 5vw 0 0; }
+.route-mark i { width:28px; height:6px; background:#d8d8d8; display:block; }
+.route-mark b { color:#e94b59; font-size:29px; line-height:0; }
+.top-grid { display:grid; grid-template-columns:1.05fr 1.55fr 1.6fr 1.6fr; gap:28px; align-items:start; }
+.panel { min-width:0; }
+.intro { padding-top:0; }
+.race-number { font-size:63px; font-weight:800; letter-spacing:-.08em; line-height:.95; }
+.race-year { font-size:25px; margin-top:12px; }
+.total-number { display:block; font-size:57px; line-height:1; letter-spacing:-.075em; margin-top:52px; }
+.total-label { display:block; font-size:25px; margin-top:5px; }
+.gender-summary { margin-top:43px; font-size:22px; }
+.gender-line { width:max-content; padding:3px 5px; margin:6px 0; }
+.gender-line b { font-size:28px; }
+.gender-line em { font-style:normal; font-size:16px; margin-left:8px; font-weight:700; }
+.men { background:linear-gradient(90deg, #b8d9fb, transparent); }.men em { color:#408ce7; }.women { background:linear-gradient(90deg, #f7c6cf, transparent); }.women em { color:#e4758b; }
+.age-range { font-size:22px; margin-top:24px; }
+.age-panel { padding-top:10px; }.age-chart { width:100%; height:360px; display:block; }
+.countries-panel { padding-top:10px; }.countries-panel h2 { margin-bottom:19px; }
+.country-row { display:grid; grid-template-columns:1fr 75px 45px; gap:10px; padding:5px 0; font-size:22px; }.country-row b,.country-row em { text-align:right; font-style:normal; }.country-row b { color:#999; font-weight:500; }.country-row em { font-weight:600; }.muted { color:#aaa; font-size:15px; line-height:1.4; margin-top:10px; }
+.side-panel { padding-top:10px; }.weather { margin-bottom:46px; }.weather h2,.podium h2 { margin-bottom:28px; }.weather-line { display:grid; grid-template-columns:1fr 1fr 1fr; align-items:center; }.weather-line strong { font-size:37px; letter-spacing:-.06em; }.weather-line span { font-size:68px; color:#b4c5cd; text-align:center; }.weather-line small { font-size:13px; line-height:1.5; text-align:right; }
+.podium-row { display:grid; grid-template-columns:31px 1fr auto; align-items:center; gap:8px; padding:5px 8px 5px 0; border-radius:20px; margin:4px 0; font-size:15px; }.podium-row b { width:29px; height:29px; display:grid; place-items:center; border-radius:50%; }.podium-row strong { font-size:15px; }.male { color:#4488e6; background:#e5edff; }.male b { background:#b8d6ff; }.female { color:#e66d84; background:#f9e5e9; }.female b { background:#f5a9b9; }
+.finish-section { margin-top:64px; position:relative; }.section-heading { display:flex; justify-content:space-between; align-items:end; margin-bottom:8px; }.section-heading h2 { font-size:25px; }.legend { display:flex; gap:18px; color:#777; font-size:12px; }.dot { width:9px; height:9px; display:inline-block; border-radius:50%; margin-right:5px; }.male-dot { background:var(--blue-deep); }.female-dot { background:var(--pink); }.finish-chart { width:100%; min-height:390px; }.finish-chart svg { width:100%; height:auto; overflow:visible; }.pixel { shape-rendering:crispEdges; cursor:crosshair; transition:opacity .1s; }.pixel:hover { stroke:#111; stroke-width:1.2; opacity:1; }.axis path,.axis line { stroke:#ccc; }.axis text { fill:#555; font-size:12px; }.grid line { stroke:#eee; }.tooltip { position:absolute; z-index:2; pointer-events:none; min-width:190px; padding:12px 15px; background:#111; color:#fff; box-shadow:0 8px 25px #0002; transform:translate(12px,12px); }.tooltip b,.tooltip span,.tooltip strong,.tooltip small { display:block; }.tooltip b { font-size:14px; }.tooltip span,.tooltip small { color:#bcbcbc; font-size:11px; margin-top:4px; }.tooltip strong { color:var(--yellow); font-size:25px; margin:8px 0 2px; }.chart-note { color:#999; font-size:12px; margin-top:8px; }.loading,.error { padding:80px 0; font-size:24px; }.error { color:#c44; }
+@media (max-width:1100px) { .top-grid { grid-template-columns:1fr 1fr; }.intro { grid-row:span 2; }.side-panel { grid-column:2; } }
+@media (max-width:680px) { .dashboard { padding:22px 18px 34px; }.masthead { margin-bottom:30px; }.route-mark { display:none; }.top-grid { grid-template-columns:1fr; gap:35px; }.intro { grid-row:auto; }.side-panel { grid-column:auto; }.total-number { margin-top:32px; }.gender-summary { margin-top:28px; }.age-chart { height:300px; }.country-row { font-size:17px; }.section-heading { display:block; }.legend { margin-top:12px; }.finish-chart { min-height:310px; }.tooltip { position:fixed; left:15px!important; top:auto!important; bottom:15px; transform:none; } }

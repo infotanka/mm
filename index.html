@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Московский марафон 2026</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main id="app" class="dashboard" v-cloak>
+    <header class="masthead">
+      <div>
+        <p class="eyebrow">SberPrime Moscow Marathon · 27 сентября 2026</p>
+        <h1>Московский марафон <span>2026</span></h1>
+      </div>
+      <div class="route-mark" aria-hidden="true"><i></i><i></i><i></i><b>●</b></div>
+    </header>
+
+    <section v-if="loading" class="loading">Загружаем результаты…</section>
+    <section v-else-if="error" class="error">Не удалось загрузить данные: {{ error }}</section>
+    <template v-else>
+      <section class="top-grid">
+        <article class="intro panel">
+          <p class="race-number">#13</p>
+          <p class="race-year">2026 год</p>
+          <strong class="total-number">{{ formatNumber(total) }}</strong>
+          <span class="total-label">участников</span>
+          <div class="gender-summary">
+            <div class="gender-line men"><b>{{ formatNumber(genderCount('M')) }}</b> мужчин <em>{{ genderPercent('M') }}%</em></div>
+            <div class="gender-line women"><b>{{ formatNumber(genderCount('F')) }}</b> женщин <em>{{ genderPercent('F') }}%</em></div>
+          </div>
+          <p class="age-range">от {{ ageRange[0] }} до {{ ageRange[1] }} лет</p>
+        </article>
+
+        <article class="panel age-panel">
+          <h2>По возрасту и полу</h2>
+          <svg ref="ageSvg" class="age-chart" role="img" aria-label="Распределение участников по возрасту и полу"></svg>
+        </article>
+
+        <article class="panel countries-panel">
+          <h2>По странам</h2>
+          <div v-for="country in topCountries" :key="country.name" class="country-row">
+            <span>{{ country.name }}</span><b>{{ formatNumber(country.count) }}</b><em>{{ country.percent }}%</em>
+          </div>
+          <p class="muted">{{ otherCountries }} других стран и территорий</p>
+        </article>
+
+        <article class="panel side-panel">
+          <div class="weather">
+            <h2>Погодные условия в 10:00</h2>
+            <div class="weather-line"><strong>+10°</strong><span>☁︎</span><small>Москва<br>27 сентября</small></div>
+          </div>
+          <div class="podium">
+            <h2>Призёры</h2>
+            <div v-for="runner in podium.M" :key="`m-${runner.bib_number}`" class="podium-row male"><b>{{ runner.place }}</b><span>{{ runner.name }}</span><strong>{{ runner.finish_time }}</strong></div>
+            <div v-for="runner in podium.F" :key="`f-${runner.bib_number}`" class="podium-row female"><b>{{ runner.place }}</b><span>{{ runner.name }}</span><strong>{{ runner.finish_time }}</strong></div>
+          </div>
+        </article>
+      </section>
+
+      <section class="finish-section panel">
+        <div class="section-heading">
+          <div><p class="eyebrow">{{ formatNumber(finishers.length) }} финишировавших</p><h2>Распределение на финише</h2></div>
+          <div class="legend"><span><i class="dot male-dot"></i> мужчины</span><span><i class="dot female-dot"></i> женщины</span></div>
+        </div>
+        <div ref="finishChart" class="finish-chart"></div>
+        <div v-if="hovered" class="tooltip" :style="tooltipStyle">
+          <b>{{ hovered.name }}</b><span>{{ hovered.gender === 'M' ? 'мужчина' : 'женщина' }}, {{ hovered.age }} лет</span>
+          <strong>{{ hovered.finish_time }}</strong><small>№ {{ hovered.bib_number }} · {{ hovered.country }}</small>
+        </div>
+        <p class="chart-note">Каждый цветной пиксель — один бегун. Наведите курсор, чтобы открыть результат.</p>
+      </section>
+    </template>
+  </main>
+  <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.prod.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+  <script src="app.js"></script>
+</body>
+</html>
