@@ -1,79 +1,162 @@
 <!doctype html>
 <html lang="ru">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Московский марафон 2026</title>
-  <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-  <main id="app" class="dashboard" v-cloak>
-    <header class="masthead">
-      <div>
-        <p class="eyebrow">SberPrime Moscow Marathon · 27 сентября 2026</p>
-        <h1>Московский марафон <span>2026</span></h1>
-      </div>
-      <div class="route-mark" aria-hidden="true"><i></i><i></i><i></i><b>●</b></div>
-    </header>
-
-    <section v-if="loading" class="loading">Загружаем результаты…</section>
-    <section v-else-if="error" class="error">Не удалось загрузить данные: {{ error }}</section>
-    <template v-else>
-      <section class="top-grid">
-        <article class="intro panel">
-          <p class="race-number">#13</p>
-          <p class="race-year">2026 год</p>
-          <strong class="total-number">{{ formatNumber(total) }}</strong>
-          <span class="total-label">участников</span>
-          <div class="gender-summary">
-            <div class="gender-line men"><b>{{ formatNumber(genderCount('M')) }}</b> мужчин <em>{{ genderPercent('M') }}%</em></div>
-            <div class="gender-line women"><b>{{ formatNumber(genderCount('F')) }}</b> женщин <em>{{ genderPercent('F') }}%</em></div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Результаты Московского марафона 2026" />
+    <title>Московский марафон 2026 | Результаты</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div id="app" v-cloak>
+      <header class="site-header">
+        <div class="header-inner">
+          <div class="brand-mark" aria-hidden="true">MM<span>26</span></div>
+          <div>
+            <p class="eyebrow">SberPrime Moscow Marathon</p>
+            <h1>Результаты забега</h1>
           </div>
-          <p class="age-range">от {{ ageRange[0] }} до {{ ageRange[1] }} лет</p>
-        </article>
-
-        <article class="panel age-panel">
-          <h2>По возрасту и полу</h2>
-          <svg ref="ageSvg" class="age-chart" role="img" aria-label="Распределение участников по возрасту и полу"></svg>
-        </article>
-
-        <article class="panel countries-panel">
-          <h2>По странам</h2>
-          <div v-for="country in topCountries" :key="country.name" class="country-row">
-            <span>{{ country.name }}</span><b>{{ formatNumber(country.count) }}</b><em>{{ country.percent }}%</em>
-          </div>
-          <p class="muted">{{ otherCountries }} других стран и территорий</p>
-        </article>
-
-        <article class="panel side-panel">
-          <div class="weather">
-            <h2>Погодные условия в 10:00</h2>
-            <div class="weather-line"><strong>+10°</strong><span>☁︎</span><small>Москва<br>27 сентября</small></div>
-          </div>
-          <div class="podium">
-            <h2>Призёры</h2>
-            <div v-for="runner in podium.M" :key="`m-${runner.bib_number}`" class="podium-row male"><b>{{ runner.place }}</b><span>{{ runner.name }}</span><strong>{{ runner.finish_time }}</strong></div>
-            <div v-for="runner in podium.F" :key="`f-${runner.bib_number}`" class="podium-row female"><b>{{ runner.place }}</b><span>{{ runner.name }}</span><strong>{{ runner.finish_time }}</strong></div>
-          </div>
-        </article>
-      </section>
-
-      <section class="finish-section panel">
-        <div class="section-heading">
-          <div><p class="eyebrow">{{ formatNumber(finishers.length) }} финишировавших</p><h2>Распределение на финише</h2></div>
-          <div class="legend"><span><i class="dot male-dot"></i> мужчины</span><span><i class="dot female-dot"></i> женщины</span></div>
+          <div class="header-date">27.09.2026<br /><span>Москва</span></div>
         </div>
-        <div ref="finishChart" class="finish-chart"></div>
-        <div v-if="hovered" class="tooltip" :style="tooltipStyle">
-          <b>{{ hovered.name }}</b><span>{{ hovered.gender === 'M' ? 'мужчина' : 'женщина' }}, {{ hovered.age }} лет</span>
-          <strong>{{ hovered.finish_time }}</strong><small>№ {{ hovered.bib_number }} · {{ hovered.country }}</small>
-        </div>
-        <p class="chart-note">Каждый цветной пиксель — один бегун. Наведите курсор, чтобы открыть результат.</p>
-      </section>
-    </template>
-  </main>
-  <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.prod.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
-  <script src="app.js"></script>
-</body>
+      </header>
+
+      <main class="page-shell">
+        <section class="intro-grid">
+          <div>
+            <p class="eyebrow accent">Финишеры · 42,195 км</p>
+            <h2>Таблица бегунов</h2>
+            <p class="intro-copy">Единый список результатов элитной и любительской категорий.</p>
+          </div>
+          <div class="stats-grid" aria-label="Сводка результатов">
+            <div class="stat-card">
+              <span class="stat-label">Участников</span>
+              <strong>{{ formatNumber(totalRunners) }}</strong>
+            </div>
+            <div class="stat-card">
+              <span class="stat-label">На странице</span>
+              <strong>{{ pageSize }}</strong>
+            </div>
+            <div class="stat-card">
+              <span class="stat-label">Страница</span>
+              <strong>{{ currentPage }} / {{ totalPages }}</strong>
+            </div>
+          </div>
+        </section>
+
+        <section v-if="!loading && !error" class="dashboard" aria-label="Аналитика результатов">
+          <div class="dashboard-grid">
+            <article class="viz-panel age-panel">
+              <h3>По возрасту и полу</h3>
+              <div class="age-chart-wrap">
+                <svg ref="ageChart" class="age-chart" role="img" aria-label="Распределение бегунов по возрасту и полу"></svg>
+                <div class="age-labels"><span>мужчины</span><span>женщины</span></div>
+              </div>
+              <div class="chart-note">количество участников</div>
+            </article>
+
+            <article class="viz-panel country-panel">
+              <h3>По странам</h3>
+              <ol class="country-list">
+                <li v-for="country in topCountries" :key="country.name">
+                  <span class="rank-name">{{ country.name }}</span>
+                  <span class="country-count">{{ formatNumber(country.count) }}</span>
+                  <span class="country-share">{{ country.share }}%</span>
+                </li>
+              </ol>
+              <p class="muted-note">{{ countryRemainderText }}</p>
+            </article>
+
+            <article class="viz-panel winners-panel">
+              <h3>Топ спортсменов</h3>
+              <div class="winner-group">
+                <div v-for="runner in topMen" :key="runner.result_url" class="winner-row men">
+                  <span class="winner-rank">{{ runner.place || '—' }}</span><span class="winner-name">{{ runner.name }}</span><span class="winner-time">{{ runner.finish_time }}</span>
+                </div>
+              </div>
+              <div class="winner-group">
+                <div v-for="runner in topWomen" :key="runner.result_url" class="winner-row women">
+                  <span class="winner-rank">{{ runner.place || '—' }}</span><span class="winner-name">{{ runner.name }}</span><span class="winner-time">{{ runner.finish_time }}</span>
+                </div>
+              </div>
+            </article>
+          </div>
+
+          <article class="viz-panel finish-panel">
+            <div class="finish-heading">
+              <div>
+                <h3>Распределение на финише</h3>
+                <p class="chart-note">одна черта — один спортсмен · сортировка по полу и возрасту внутри минуты</p>
+              </div>
+              <div class="finish-legend"><span><i class="legend-line men"></i>мужчины</span><span><i class="legend-line women"></i>женщины</span></div>
+            </div>
+            <div ref="finishChartWrap" class="finish-chart-wrap">
+              <svg ref="finishChart" class="finish-chart" role="img" aria-label="Распределение финишей по времени"></svg>
+              <div v-if="tooltip.visible" class="finish-tooltip" :style="{ left: `${tooltip.x}px`, top: `${tooltip.y}px` }">
+                <strong>{{ tooltip.runner.name }}</strong><span>{{ tooltip.runner.gender === 'M' ? 'мужчина' : 'женщина' }}, {{ tooltip.runner.age }} лет</span><b>{{ tooltip.runner.finish_time }}</b>
+              </div>
+            </div>
+          </article>
+        </section>
+
+        <section class="table-card" aria-labelledby="table-title">
+          <div class="table-toolbar">
+            <div>
+              <h3 id="table-title">Все результаты</h3>
+              <p class="table-caption">Показаны записи {{ formatNumber(firstVisible + 1) }}–{{ formatNumber(lastVisible) }}</p>
+            </div>
+            <div class="legend" aria-label="Категории">
+              <span><i class="legend-dot elite"></i>Elite</span>
+              <span><i class="legend-dot amateur"></i>Amateur</span>
+            </div>
+          </div>
+
+          <div v-if="loading" class="state-message">Загрузка результатов...</div>
+          <div v-else-if="error" class="state-message error-state">{{ error }}</div>
+          <div v-else class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th class="col-place">Место</th>
+                  <th>Бегун</th>
+                  <th>Страна</th>
+                  <th class="col-center">Пол</th>
+                  <th class="col-age">Возраст</th>
+                  <th>Класс</th>
+                  <th class="col-number">Номер</th>
+                  <th class="col-time">Темп</th>
+                  <th class="col-time">Финиш</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="runner in visibleRunners" :key="runner.result_url">
+                  <td class="place-cell">{{ runner.place || '—' }}</td>
+                  <td class="name-cell">{{ runner.name }}</td>
+                  <td>{{ runner.country }}</td>
+                  <td class="col-center gender-cell">{{ runner.gender }}</td>
+                  <td class="col-age">{{ runner.age }}</td>
+                  <td><span class="class-pill" :class="runner.class">{{ runner.class }}</span></td>
+                  <td class="col-number mono">{{ runner.bib_number }}</td>
+                  <td class="mono">{{ runner.pace }}</td>
+                  <td class="time-cell mono">{{ runner.finish_time }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <nav v-if="!loading && !error" class="pagination" aria-label="Пагинация результатов">
+            <button type="button" class="page-button arrow" :disabled="currentPage === 1" @click="currentPage--" aria-label="Предыдущая страница">←</button>
+            <span class="page-status">{{ currentPage }} <em>из</em> {{ totalPages }}</span>
+            <button type="button" class="page-button arrow" :disabled="currentPage === totalPages" @click="currentPage++" aria-label="Следующая страница">→</button>
+          </nav>
+        </section>
+      </main>
+    </div>
+
+    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+    <script src="app.js"></script>
+  </body>
 </html>
